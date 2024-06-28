@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keda-example-nginx-config
+  labels:
+    app.kubernetes.io/name: keda-example
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+
+data:
+  {{- $files := .Files }}
+  nginx.conf: |
+{{- $files.Get "data/nginx.conf" | nindent 4 }}

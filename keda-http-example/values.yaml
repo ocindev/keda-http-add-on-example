@@ -1,0 +1,11 @@
+deploymentToZero: true
+
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.27.0"
+
+service:
+  port: 80
