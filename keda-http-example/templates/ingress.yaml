@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name:  {{ include "keda-http-addon-example.fullname" . }}
+  labels:
+    {{ include "keda-http-addon-example.labels" . | nindent 4 }}
+spec:
+  ingressClassName: nginx
+  rules:
+    {{- range $host := .Values.ingress.hosts }}
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keda-add-ons-http-interceptor-proxy
+                port:
+                  name: http
+    {{- end }}

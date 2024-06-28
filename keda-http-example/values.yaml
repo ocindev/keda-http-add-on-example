@@ -1,5 +1,7 @@
 deploymentToZero: true
 
+fullnameOverride: ""
+nameOverride: ""
 
 image:
   repository: nginx
@@ -9,3 +11,13 @@ image:
 
 service:
   port: 80
+  proxyPort: 8080
+
+ingress:
+  hosts:
+    - "keda-example.local"
+
+keda:
+  http:
+    interceptor:
+      port: 8080

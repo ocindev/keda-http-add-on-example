@@ -1,39 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: keda-example
+  name:  {{ include "keda-http-addon-example.fullname" . }}
   labels:
-    app.kubernetes.io/name: keda-example
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{ include "keda-http-addon-example.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: keda-example
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/managed-by: {{ .Release.Service }}
+      {{ include "keda-http-addon-example.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        helm.sh/chart: keda-example
-        app.kubernetes.io/name: keda-example
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        {{ include "keda-http-addon-example.labels" . | nindent 8 }}
     spec:
       volumes:
         - name: nginx-config
           configMap:
-            name: keda-example-nginx-config
+            name:  {{ include "keda-http-addon-example.name" . }}-nginx-config
       containers:
-        - name: keda-example
+        - name: {{ include "keda-http-addon-example.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.args }}
-          args:
-            {{- range $arg := .Values.args }}
-              - {{ $arg }}
-            {{- end }}
-          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

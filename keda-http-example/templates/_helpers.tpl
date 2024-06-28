@@ -36,9 +36,6 @@ Common labels
 {{- define "keda-http-addon-example.labels" -}}
 helm.sh/chart: {{ include "keda-http-addon-example.chart" . }}
 {{ include "keda-http-addon-example.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -48,15 +45,4 @@ Selector labels
 {{- define "keda-http-addon-example.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "keda-http-addon-example.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "keda-http-addon-example.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "keda-http-addon-example.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
 {{- end }}

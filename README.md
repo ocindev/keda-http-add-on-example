@@ -1,16 +1,13 @@
 # KEDA HTTP addon scale down to zero example
 
-This repository showcases the usage of KEDA and KEDA HTTP addon to scale down a deployment to zero based on the HTTP traffic.
+This repository showcases the usage of [KEDA](https://keda.sh) and [KEDA HTTP addon](https://kedacore.github.io/http-add-on/) to scale down a deployment to zero based on the HTTP traffic.
 
-
-- [x] Basic example with step-by-step-guide
-- [ ] extend documentation
-- [ ] add example for different scaling methods
 
 ## Requirements:
 
-* minikube
-* Docker
+* [minikube](https://minikube.sigs.k8s.io/docs/)
+* [Helm](https://helm.sh)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
 ## Steps
 
@@ -40,24 +37,31 @@ helm install keda kedacore/keda --namespace keda --create-namespace
 
 #### 1. Install HTTP addon chart to the app namespace
 ```zsh
-helm install http-add-on kedacore/keda-add-ons-http --namespace keda-http-example --create-namespace
+helm install http-add-on kedacore/keda-add-ons-http --namespace keda
 ```
 
-### Deploy sample nginx app
+### Create sample nginx deployment
 
 #### 1. Install sample nginx helm chart
 ```zsh
 helm install -n keda-http-example keda-http-example keda-http-example/ --values keda-http-example/values.yaml
 ```
 
-#### 2. Port forward keda-add-ons-http-interceptor-proxy
-```zsh
-kubectl port-forward -n keda-http-example svc/keda-add-ons-http-interceptor-proxy 8080:8080
+### Test autoscaling
+
+#### 1. Add keda-http-example to /etc/hosts
+```
+127.0.0.1 keda-example.local
 ```
 
-#### 3. Send HTTP request
-
+#### 2. Start minikube tunnel
 ```zsh
-curl -H "Host: keda-example.local" 127.0.0.1:8080
+minikube tunnel
 ```
 
+#### 3. Send HTTP request to keda-example deployment
+
+```zsh
+curl -H "Host: keda-example.local" keda-example.local
+Hello from Nginx!
+```
