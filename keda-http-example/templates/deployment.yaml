@@ -4,6 +4,8 @@ metadata:
   name:  {{ include "keda-http-addon-example.fullname" . }}
   labels:
     {{ include "keda-http-addon-example.labels" . | nindent 4 }}
+  annotations:
+    deployment.kubernetes.io/timestamp: {{ now | quote }}
 spec:
   selector:
     matchLabels:
@@ -13,26 +15,19 @@ spec:
       labels:
         {{ include "keda-http-addon-example.labels" . | nindent 8 }}
     spec:
-      volumes:
-        - name: nginx-config
-          configMap:
-            name:  {{ include "keda-http-addon-example.name" . }}-nginx-config
       containers:
         - name: {{ include "keda-http-addon-example.name" . }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          volumeMounts:
-            - name: nginx-config
-              mountPath: /etc/nginx
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
