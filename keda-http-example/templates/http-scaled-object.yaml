@@ -15,7 +15,7 @@ spec:
       granularity: 1s
       targetValue: 1
       window: 1m
-  scaleDownPeriod: 30
+  scaledownPeriod: 45
   scaleTargetRef:
     name: {{ include "keda-http-addon-example.fullname" . }}
     kind: Deployment
